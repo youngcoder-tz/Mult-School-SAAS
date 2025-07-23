@@ -50,7 +50,7 @@
                                         <option value="{{ $country->phonecode }}" @if(old('area_code')==$country->
                                             phonecode) selected @endif>{{ $country->short_name.'('.$country->phonecode.')' }}</option>
                                         @endforeach
-                                    </select>
+                                    </select>Select Code
                                     @if ($errors->has('area_code'))
                                     <span class="text-danger"><i class="fas fa-exclamation-triangle"></i> {{
                                         $errors->first('area_code') }}</span>

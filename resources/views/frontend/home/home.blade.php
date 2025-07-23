@@ -135,7 +135,8 @@
                     <!-- section-left-align-->
                     <div class="section-left-title-with-btn d-flex justify-content-between align-items-end">
                         <div class="section-title section-title-left d-flex align-items-start">
-                            <div class="section-heading-img"><img src="{{ getImageFile(get_option('course_logo')) }}" alt="Course"></div>
+                            <div class="section-heading-img">
+                                <img width=90 src="{{ getImageFile(get_option('course_logo')) }}" alt="Course"></div>
                             <div>
                                 <h3 class="section-heading">{{ __(get_option('course_title')) }}</h3>
                                 <p class="section-sub-heading">{{ __(get_option('course_subtitle')) }}</p>
@@ -679,7 +680,7 @@
                 <div class="col-md-6 col-lg-6 col-xl-3">
                     <div class="achievement-item d-flex align-items-center">
                         <div class="flex-shrink-0 achievement-img-wrap">
-                            <img src="{{ getImageFile(get_option('achievement_first_logo')) }}" alt="achievement">
+                           <img src="{{ getImageFile(get_option('achievement_first_logo')) }}" alt="achievement" style="width: 90px; height: 90px; object-fit: cover;">
                         </div>
                         <div class="flex-grow-1 ms-3 achievement-content">
                             <h6>{{ __(get_option('achievement_first_title')) }}</h6>
@@ -693,7 +694,7 @@
                 <div class="col-md-6 col-lg-6 col-xl-3">
                     <div class="achievement-item d-flex align-items-center">
                         <div class="flex-shrink-0 achievement-img-wrap">
-                            <img src="{{ getImageFile(get_option('achievement_second_logo')) }}" alt="achievement">
+                            <img src="{{ getImageFile(get_option('achievement_second_logo')) }}" alt="achievement" style="width: 90px; height: 90px; object-fit: cover;">
                         </div>
                         <div class="flex-grow-1 ms-3 achievement-content">
                             <h6>{{ __(get_option('achievement_second_title')) }}</h6>
@@ -707,7 +708,7 @@
                 <div class="col-md-6 col-lg-6 col-xl-3">
                     <div class="achievement-item d-flex align-items-center">
                         <div class="flex-shrink-0 achievement-img-wrap">
-                            <img src="{{ getImageFile(get_option('achievement_third_logo')) }}" alt="achievement">
+                            <img src="{{ getImageFile(get_option('achievement_third_logo')) }}" alt="achievement" style="width: 90px; height: 90px; object-fit: cover;">
                         </div>
                         <div class="flex-grow-1 ms-3 achievement-content">
                             <h6>{{ __(get_option('achievement_third_title')) }}</h6>
@@ -721,7 +722,7 @@
                 <div class="col-md-6 col-lg-6 col-xl-3">
                     <div class="achievement-item d-flex align-items-center">
                         <div class="flex-shrink-0 achievement-img-wrap">
-                            <img src="{{ getImageFile(get_option('achievement_four_logo')) }}" alt="achievement">
+                            <img src="{{ getImageFile(get_option('achievement_four_logo')) }}" alt="achievement" style="width: 78px; height: 85px; ">
                         </div>
                         <div class="flex-grow-1 ms-3 achievement-content">
                             <h6>{{ __(get_option('achievement_four_title')) }}</h6>
@@ -779,7 +780,7 @@
                         <div class="still-no-luck radius-3 bg-white position-absolute">
                             <h6>{{ __(get_option('faq_image_title')) }}</h6>
                             <p>{{ __('Then feel free to') }} <a href="{{ route('contact') }}"
-                                                                    class="text-decoration-underline color-heading">{{ __('Contact With Us') }}</a>,
+                                                                    class="text-decoration-underline color-heading" style="color:red;">{{ __('Contact With Us') }}</a>,
                                 {{ __('We are 24/7 for you') }}</p>
                         </div>
                     </div>

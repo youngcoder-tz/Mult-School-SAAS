@@ -21,7 +21,7 @@
                 <div class="col-xl-12 col-lg-12 col-md-12">
                     <div class="breadcrumb-text">
                         <a class="brand-logo" href="#"><img src="{{ getImageFile(get_option('app_logo')) }}" alt="logo"></a>
-                        <h2>LMSZAI - Learning Management System</h2>
+                        <h2>LearnSpace - Learning Management System</h2>
                         <p>{{ \Carbon\Carbon::parse(now())->format('l, j F Y') }}</p>
                     </div>
                 </div>

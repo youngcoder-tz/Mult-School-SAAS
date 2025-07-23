@@ -28,8 +28,7 @@ use Illuminate\Support\Str;
 
 class ProfileController extends Controller
 {
-
-    use  ImageSaveTrait, General, SendNotification, ApiStatusTrait;
+    use ImageSaveTrait, General, SendNotification, ApiStatusTrait;
 
     protected $studentModel;
     protected $organizationModel;
@@ -42,38 +41,65 @@ class ProfileController extends Controller
         $this->organizationModel = new Crud($organization);
     }
 
+    /**
+     * Get student profile
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function profile()
     {
-        $data = auth::user();
-        $data->student;
-        return $this->success($data);
+        try {
+            $user = Auth::user();
+            $user->load('student');
+            
+            return $this->success([
+                'user' => $user,
+                'student' => $user->student
+            ]);
+        } catch (\Exception $e) {
+            return $this->failed([], __('Failed to load profile'), 500);
+        }
     }
 
+    /**
+     * Update student profile
+     * 
+     * @param ProfileRequest $request
+     * @param string $uuid
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function saveProfile(ProfileRequest $request, $uuid)
     {
         try {
             DB::beginTransaction();
+            
             $student = $this->studentModel->getRecordByUuid($uuid);
+            $user = User::findOrFail($student->user_id);
 
-            $user = User::find($student->user_id);
-
-            if ($request->image) {
-                $this->deleteFile($user->image); // delete file from server
-
-                $image = $this->saveImage('user', $request->image, null, 'null'); // new file upload into server
-
-            } else {
-                $image = $user->image;
+            // Handle image upload
+            $image = $user->image;
+            if ($request->hasFile('image')) {
+                $this->deleteFile($user->image);
+                $image = $this->saveImage('user', $request->file('image'));
             }
 
-            $user->name = $request->first_name . ' ' . $request->last_name;
-            $user->image = $image;
-            $user->mobile_number = $request->mobile_number;
-            $user->phone_number = $request->mobile_number;
-            $user->address = $request->address;
-            $user->save();
+            // Update user data
+            $user->update([
+                'name' => trim("{$request->first_name} {$request->last_name}"),
+                'image' => $image,
+                'mobile_number' => $request->mobile_number,
+                'phone_number' => $request->mobile_number,
+                'address' => $request->address,
+                'meta_title' => $request->meta_title,
+                'meta_description' => $request->meta_description,
+                'meta_keywords' => $request->meta_keywords,
+                'og_image' => $request->hasFile('og_image') 
+                    ? $this->saveImage('meta', $request->file('og_image')) 
+                    : $user->og_image
+            ]);
 
-            $data = [
+            // Update student data
+            $this->studentModel->updateByUuid([
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'mobile_number' => $request->mobile_number,
@@ -85,109 +111,141 @@ class ProfileController extends Controller
                 'city_id' => $request->city_id,
                 'postal_code' => $request->postal_code,
                 'address' => $request->address,
-            ];
-
-            $this->studentModel->updateByUuid($data, $uuid);
+            ], $uuid);
 
             DB::commit();
 
-            return $this->success([], __('Updated Successful'));
+            return $this->success([
+                'user' => $user->fresh(),
+                'student' => $student->fresh()
+            ], __('Profile updated successfully'));
+            
         } catch (\Exception $e) {
-            DB::rollback();
-            return $this->failed([], $e->getMessage());
+            DB::rollBack();
+            return $this->failed([], __('Failed to update profile: ') . $e->getMessage(), 500);
         }
     }
 
+    /**
+     * Change password
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function changePasswordUpdate(Request $request)
     {
-        $request->validate([
-            'email' => 'required',
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
             'password' => 'required',
-            'new_password' => [
-                'required',
-                'min:6',
-                'max:64',
-                'confirmed'
-            ],
+            'new_password' => 'required|min:8|max:64|confirmed|different:password',
+        ], [
+            'new_password.different' => __('The new password must be different from current password')
         ]);
 
-        try{
-            if(auth()->user()->email != $request->email){
-                return $this->error([], __('Invalid email'));
+        if ($validator->fails()) {
+            return $this->error($validator->errors(), __('Validation failed'), 422);
+        }
+
+        try {
+            $user = Auth::user();
+            
+            if ($user->email != $request->email) {
+                return $this->error([], __('Invalid email'), 401);
             }
 
-            $user = User::find(Auth::id());
-
-            if (Hash::check($request->password, $user->password)) {
-                $user->password = Hash::make($request->new_password);
-                $user->save();
-                return $this->success([], __('Password changed successfully'));
-            } else {
-                return $this->success([], __('Your old password does not match.'));
+            if (!Hash::check($request->password, $user->password)) {
+                return $this->error([], __('Current password is incorrect'), 401);
             }
 
-        }catch(\Exception $e){
-            return $this->error([], $e->getMessage());
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+
+            return $this->success([], __('Password changed successfully'));
+            
+        } catch (\Exception $e) {
+            return $this->error([], __('Password change failed: ') . $e->getMessage(), 500);
         }
     }
 
+    /**
+     * Get instructor application information
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function becomeAnInstructor()
     {
-        if (auth()->user()->role == USER_ROLE_INSTRUCTOR) {
-            $message =  __('You are already an instructor!');
-            return $this->failed([], $message);
-        } elseif (auth()->user()->role == USER_ROLE_ORGANIZATION) {
-            $message =  __('You are already an organization!');
-            return $this->failed([], $message);
-        }
+        try {
+            $user = Auth::user();
+            
+            if ($user->role == USER_ROLE_INSTRUCTOR) {
+                return $this->error([], __('You are already an instructor!'), 400);
+            }
+            
+            if ($user->role == USER_ROLE_ORGANIZATION) {
+                return $this->error([], __('You are already an organization!'), 400);
+            }
 
-        $data['instructorFeatures'] = InstructorFeature::take(3)->get();
-        $data['instructorProcedures'] = InstructorProcedure::all();
-        $data['total_students'] = Student::count();
-        $data['total_enrollments'] = Enrollment::count();
-        $data['total_instructors'] = Instructor::count();
-        return $this->success($data);
+            return $this->success([
+                'instructor_features' => InstructorFeature::take(3)->get(),
+                'instructor_procedures' => InstructorProcedure::all(),
+                'stats' => [
+                    'total_students' => Student::count(),
+                    'total_enrollments' => Enrollment::count(),
+                    'total_instructors' => Instructor::count()
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return $this->error([], __('Failed to load instructor information'), 500);
+        }
     }
 
+    /**
+     * Submit instructor application
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function saveInstructorInfo(Request $request)
     {
-        $request->validate(
-            [
-                'first_name' => 'required',
-                'last_name' => 'required',
-                'professional_title' => 'required',
-                'about_me' => 'required',
-                'cv_file' => 'required|max:5000|mimes:pdf',
-            ],
-            [
-                'required'  => 'The :attribute field is required.',
-            ]
-        );
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'professional_title' => 'required|string|max:255',
+            'about_me' => 'required|string',
+            'phone_number' => 'required|string|max:20',
+            'address' => 'required|string',
+            'cv_file' => 'required|file|mimes:pdf|max:5120', // 5MB
+        ]);
 
-        $authUser = Auth::user();
+        if ($validator->fails()) {
+            return $this->error($validator->errors(), __('Validation failed'), 422);
+        }
 
-        $object = Instructor::where('user_id', $authUser->id)->get();
-
-        if ($object->count() > 0) {
-            $message =  __('Request already send');
-            return $this->success([], $message);
-        } else {
-
-            $slugCount = Instructor::where('slug', getSlug($authUser->name))->count();
-
-            if ($slugCount) {
-                $slug = getSlug($authUser->name) . '-' . rand(100000, 999999);
-            } else {
-                $slug = getSlug($authUser->name);
+        try {
+            DB::beginTransaction();
+            
+            $user = Auth::user();
+            
+            if (Instructor::where('user_id', $user->id)->exists()) {
+                return $this->error([], __('Request already submitted'), 400);
             }
 
-            $cv_file_data = $this->uploadFileWithDetails('user', $request->cv_file);
-            if (!$cv_file_data['is_uploaded']) {
-                $message = __('Something went wrong! Failed to upload file');
-                return $this->success([], $message);
+            // Generate unique slug
+            $baseSlug = Str::slug($user->name);
+            $slug = Instructor::where('slug', $baseSlug)->exists() 
+                ? $baseSlug . '-' . Str::random(6)
+                : $baseSlug;
+
+            // Handle CV file upload
+            $cvFile = $this->uploadFileWithDetails('instructor_cv', $request->file('cv_file'));
+            if (!$cvFile['is_uploaded']) {
+                throw new \Exception(__('Failed to upload CV file'));
             }
-            $data = [
-                'user_id' => Auth::user()->id,
+
+            // Create instructor record
+            $instructor = $this->instructorModel->create([
+                'user_id' => $user->id,
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'professional_title' => $request->professional_title,
@@ -195,29 +253,67 @@ class ProfileController extends Controller
                 'address' => $request->address,
                 'about_me' => $request->about_me,
                 'slug' => $slug,
-                'cv_file' => $cv_file_data['path'],
-                'cv_filename' => $cv_file_data['original_filename'],
-            ];
+                'cv_file' => $cvFile['path'],
+                'cv_filename' => $cvFile['original_filename'],
+                'status' => STATUS_PENDING
+            ]);
 
-            $this->instructorModel->create($data);
-            $text = __("New Instructor request");
+            // Send notification
+            $this->send(__("New Instructor request from {$user->name}"), 1);
 
-            $this->send($text, 1);
+            DB::commit();
 
-            $message = __('Request successfully send');
-            return $this->success([], $message);
+            return $this->success([
+                'instructor' => $instructor
+            ], __('Application submitted successfully'));
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->error([], __('Application failed: ') . $e->getMessage(), 500);
         }
     }
 
+    /**
+     * Get states by country
+     * 
+     * @param int $country_id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getStateByCountry($country_id)
     {
-        $data['states'] = State::where('country_id', $country_id)->orderBy('name', 'asc')->get();
-        return $this->success($data);
+        try {
+            $states = State::where('country_id', $country_id)
+                ->orderBy('name')
+                ->get(['id', 'name']);
+                
+            return $this->success([
+                'states' => $states
+            ]);
+            
+        } catch (\Exception $e) {
+            return $this->error([], __('Failed to load states'), 500);
+        }
     }
 
+    /**
+     * Get cities by state
+     * 
+     * @param int $state_id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getCityByState($state_id)
     {
-        $data['cities'] = City::where('state_id', $state_id)->orderBy('name', 'asc')->get();
-        return $this->success($data);
+        try {
+            $cities = City::where('state_id', $state_id)
+                ->orderBy('name')
+                ->get(['id', 'name']);
+                
+            return $this->success([
+                'cities' => $cities
+            ]);
+            
+        } catch (\Exception $e) {
+            return $this->error([], __('Failed to load cities'), 500);
+        }
     }
 }

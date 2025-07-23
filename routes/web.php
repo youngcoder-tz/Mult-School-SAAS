@@ -24,8 +24,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::group(['middleware' => ['version.update']], function () {
-
+Route::group([], function () {  // <-- Remove 'version.update' middleware
     Route::get('/local/{ln}', function ($ln) {
         $language = Language::where('iso_code', $ln)->first();
         if (!$language){
@@ -52,8 +51,6 @@ Route::group(['middleware' => ['version.update']], function () {
     });
 });
 
-Route::get('version-update', [VersionUpdateController::class, 'versionUpdate'])->name('version-update');
-Route::post('process-update', [VersionUpdateController::class, 'processUpdate'])->name('process-update');
 
 Route::get('/linkstorage', function () {
     Artisan::call('storage:link');

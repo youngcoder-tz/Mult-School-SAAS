@@ -5,10 +5,10 @@
         </button>
     </div>
 
-    <div class="sidebar__brand">
+    <div class="sidebar__brand" style="padding-bottom: 2px;">
         <a href="{{ route('admin.dashboard') }}">
             @if(get_option('app_logo') != '')
-                <img src="{{getImageFile(get_option('app_logo'))}}" alt="">
+                <img style="margin-left:-24px; margin-bottom:0px;" width=300 src="{{getImageFile(get_option('app_logo'))}}" alt="">
             @else
                 <img src="" alt="">
             @endif

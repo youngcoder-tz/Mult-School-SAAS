@@ -130,7 +130,7 @@
                                 <td>
                                     {{ __("Latest Version") }}
                                     <a class="text-link" target="_blank"
-                                        href="https://codecanyon.net/item/lmszai-learning-management-system/38383087">{{
+                                        href="">{{
                                         __("Download Latest") }}</a>
                                 </td>
                                 <td>{{ $latestVersion }}</td>
@@ -259,7 +259,7 @@
             <div class="col-lg-12">
                 <div class="border mt-lg-4 radius-4">
                     <div class="px-2 py-3 border-bottom">
-                        <h2 class="fw-bold ms-1">{{ __('LMSZAI Official Addons') }}</h2>
+                        <h2 class="fw-bold ms-1">G-Nexus Official Addons</h2>
                     </div>
                     <div class="m-0 mx-2 p-0 pb-2 pt-4 row">
                         @foreach ($addons as $addon)
@@ -267,7 +267,7 @@
                                 <div class="align-items-center py-4 row">
                                     <div class="col-xs-2 col-lg-1">
                                         <a href="{{ $addon->details->codecanyon_url }}" target="_blank">
-                                            <img src="https://support.zainikthemes.com/uploaded_files/images/app_image/{{ $addon->logo }}"
+                                            <img src="_____________{{ $addon->logo }}"
                                                 class="img-responsive img-thumbnail" alt="">
                                         </a>
                                     </div>

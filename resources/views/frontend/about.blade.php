@@ -153,7 +153,7 @@
                 <!-- section-left-align-->
                 <div class="section-left-title-with-btn d-flex justify-content-between align-items-end">
                     <div class="section-title section-title-left d-flex align-items-start">
-                        <div class="section-heading-img"><img src="{{ getImageFile(@$aboutUsGeneral->team_member_logo_path) }}" alt="Our team"></div>
+                        <div class="section-heading-img"><img width=70 height=70 src="{{ getImageFile(@$aboutUsGeneral->team_member_logo_path) }}" alt="Our team"></div>
                         <div>
                             <h3 class="section-heading">{{ __(@$aboutUsGeneral->team_member_title) }}</h3>
                             <p class="section-sub-heading">{{ __(@$aboutUsGeneral->team_member_subtitle) }}</p>

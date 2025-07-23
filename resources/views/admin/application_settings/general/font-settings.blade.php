@@ -58,7 +58,7 @@
                                                 <label>{{ __('Font Family') }} </label>
                                             </div>
                                             <div class="col-lg-9 mb-15">
-                                                <input type="text" name="app_font_family" class="color-picker w-100" placeholder="'Jost', sans-serif"
+                                                <input type="text" name="app_font_family" class="color-picker w-100" placeholder="'Poppins', sans-serif"
                                                        value="{{ get_option('app_font_family') }}">
                                             </div>
                                         </div>

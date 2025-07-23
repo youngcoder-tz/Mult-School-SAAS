@@ -29,12 +29,12 @@
 
         @if (get_option('app_font_design_type') == 2)
             @if (empty(get_option('app_font_link')))
-                --body-font-family: 'Jost', sans-serif;
+                --body-font-family: 'Poppins', sans-serif;
             @else
                 --body-font-family: {!! get_option('app_font_family') !!};
             @endif
         @else
-            --body-font-family: 'Jost', sans-serif;
+            --body-font-family: 'Poppins', sans-serif;
         @endif
 
         @if (get_option('app_color_design_type') == 2)

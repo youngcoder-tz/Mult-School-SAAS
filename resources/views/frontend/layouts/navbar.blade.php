@@ -6,7 +6,14 @@
     <!-- Navigation -->
     <nav class="navbar sticky-header navbar-expand-lg" id="mainNav">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{{ url('/') }}"><img src="{{ getImageFile(get_option('app_logo')) }}" alt="Logo"></a>
+            <a class="navbar-brand  nanooo" href="{{ url('/') }}"><img src="{{ getImageFile(get_option('app_logo')) }}" alt="Logo" style="width:250px !important; height: 80px ; margin-left: -34px ; "></a>
+            <style>
+                @media (max-width : 540px){
+                    .nanooo{
+                        margin-top: -20px;
+                    }
+                }
+            </style>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">

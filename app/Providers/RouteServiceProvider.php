@@ -46,46 +46,46 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
 
 
-            Route::middleware(['web',  'local','version.update', 'addon'])
+            Route::middleware(['web',  'local', 'addon'])
                 ->namespace($this->namespace. '\Frontend')
                 ->group(base_path('routes/frontend.php'));
 
-            Route::middleware(['web', 'auth', 'admin', 'local','version.update', 'addon'])
+            Route::middleware(['web', 'auth', 'admin', 'local', 'addon'])
                 ->prefix('admin')
                 ->namespace($this->namespace. '\Admin')
                 ->group(base_path('routes/admin.php'));
 
-            Route::middleware(['web', 'auth', 'instructor', 'local','version.update', 'addon'])
+            Route::middleware(['web', 'auth', 'instructor', 'local', 'addon'])
                 ->prefix('instructor')
                 ->namespace($this->namespace. '\Instructor')
                 ->group(base_path('routes/instructor.php'));
 
-            Route::middleware(['web', 'auth', 'organization', 'local','version.update', 'addon'])
+            Route::middleware(['web', 'auth', 'organization', 'local', 'addon'])
                 ->prefix('organization')
                 ->as('organization.')
                 ->namespace($this->namespace. '\Organization')
                 ->group(base_path('routes/organization.php'));
 
-            Route::middleware(['web', 'auth', 'student', 'local','version.update', 'addon', 'device.control'])
+            Route::middleware(['web', 'auth', 'student', 'local', 'addon', 'device.control'])
                 ->prefix('student')
                 ->namespace($this->namespace. '\Student')
                 ->group(base_path('routes/student.php'));
 
 
-            Route::middleware(['web', 'auth', 'common', 'local','version.update', 'addon'])
+            Route::middleware(['web', 'auth', 'common', 'local', 'addon'])
                 ->prefix('common')
                 ->namespace($this->namespace. '\Common')
                 ->group(base_path('routes/common.php'));
             
             if(isAddonInstalled('LMSZAIAI')){
-                Route::middleware(['web', 'auth', 'local', 'version.update', 'addon', 'ai-access'])
+                Route::middleware(['web', 'auth', 'local', 'addon', 'ai-access'])
                     ->prefix('ai')
                     ->namespace($this->namespace. '\AI')
                     ->group(base_path('routes/addon/ai.php'));
             }
             
             if(isAddonInstalled('LMSZAIPRODUCT')){
-                Route::middleware(['web', 'local', 'version.update', 'addon'])
+                Route::middleware(['web', 'local', 'addon'])
                     ->namespace($this->namespace. '\Product')
                     ->group(base_path('routes/addon/product.php'));
             }

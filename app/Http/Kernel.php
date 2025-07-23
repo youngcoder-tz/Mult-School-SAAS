@@ -87,7 +87,7 @@ class Kernel extends HttpKernel
         'affiliate' => Affiliator::class,
         'admin' => Admin::class,
         'isDemo' => IsDemo::class,
-        'version.update' => VersionUpdate::class,
+        //'version.update' => VersionUpdate::class,
         'course.access' => CourseAccessMiddleware::class,
         'device.control' => DeviceControlMiddleware::class,
         'private.mode' => PrivateModeMiddleware::class,

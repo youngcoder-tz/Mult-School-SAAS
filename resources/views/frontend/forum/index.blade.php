@@ -56,7 +56,7 @@
                         </div>
                         <div class="col-md-5">
                             <div class="forum-banner-right-img">
-                                <img src="{{ asset('frontend/assets/img/forum-banner-right-img.png') }}" alt="lmszai forum"
+                                <img width=400 src="{{ asset('frontend/assets/img/forum.png') }}" alt="lmszai forum"
                                     class="img-fluid">
                             </div>
                         </div>
@@ -83,7 +83,8 @@
                         <div class="col-md-4">
                             <div class="single-feature-item d-flex align-items-center">
                                 <div class="flex-shrink-0 feature-img-wrap">
-                                    <a href="{{ route('forum.forumCategoryPosts', $forumCategory->uuid) }}"><img
+                                    <a href="{{ route('forum.forumCategoryPosts', $forumCategory->uuid) }}">
+                                        <img   
                                             src="{{ getImageFile($forumCategory->logo) }}" alt="feature"></a>
                                 </div>
                                 <div class="flex-grow-1 ms-3 feature-content">
@@ -110,7 +111,7 @@
                         <div class="col-md-3">
                             <div class="single-feature-item d-flex align-items-center bg-transparent">
                                 <div class="flex-shrink-0 feature-img-wrap">
-                                    <img src="{{ asset('frontend/assets/img/feature-img/forum-countdown1.png') }}"
+                                    <img width=50  src="{{ asset('frontend/assets/img/feature-img/forum-countdown1.png') }}"
                                         alt="feature">
                                 </div>
                                 <div class="flex-grow-1 ms-3 feature-content">
@@ -122,7 +123,7 @@
                         <div class="col-md-3">
                             <div class="single-feature-item d-flex align-items-center bg-transparent">
                                 <div class="flex-shrink-0 feature-img-wrap">
-                                    <img src="{{ asset('frontend/assets/img/feature-img/forum-countdown2.png') }}"
+                                    <img width=50 src="{{ asset('frontend/assets/img/feature-img/forum-countdown2.png') }}"
                                         alt="feature">
                                 </div>
                                 <div class="flex-grow-1 ms-3 feature-content">
@@ -134,7 +135,7 @@
                         <div class="col-md-3">
                             <div class="single-feature-item d-flex align-items-center bg-transparent">
                                 <div class="flex-shrink-0 feature-img-wrap">
-                                    <img src="{{ asset('frontend/assets/img/feature-img/forum-countdown3.png') }}"
+                                    <img width=60 src="{{ asset('frontend/assets/img/feature-img/forum-countdown3.png') }}"
                                         alt="feature">
                                 </div>
                                 <div class="flex-grow-1 ms-3 feature-content">
@@ -146,7 +147,7 @@
                         <div class="col-md-3">
                             <div class="single-feature-item d-flex align-items-center bg-transparent">
                                 <div class="flex-shrink-0 feature-img-wrap">
-                                    <img src="{{ asset('frontend/assets/img/feature-img/forum-countdown4.png') }}"
+                                    <img width=75 src="{{ asset('frontend/assets/img/feature-img/forum-countdown4.png') }}"
                                         alt="feature">
                                 </div>
                                 <div class="flex-grow-1 ms-3 feature-content">

@@ -67,7 +67,7 @@
                             <div class="row input__group mb-25">
                                 <label class="col-lg-3">{{ __('Developed By') }} <span class="text-danger">*</span></label>
                                 <div class="col-lg-9">
-                                    <input type="text" name="app_developed" value="{{get_option('app_developed')}}" class="form-control" required>
+                                    <input type="text" name="app_developed" disabled value="{{get_option('app_developed')}}" class="form-control" required>
                                 </div>
                             </div>
 
